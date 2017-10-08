@@ -494,12 +494,13 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 
 		Tc = Tc + weights_(i) * x_diff * z_diff.transpose();
 	}
-
+	cout << "UKF::UpdateRadar calcualte cross correlation matrix complete" << endl;
 	//Kalman gain K;
 	MatrixXd K = Tc * S.inverse();
-
+	cout << "UKF::UpdateRadar Kalman gain complete" << endl;
 	//residual
 	VectorXd z_diff = Zsig - z_pred;
+	cout << "UKF::UpdateRadar Residual complete" << endl;
 
 	//angle normalization
 	while (z_diff(1)> M_PI) z_diff(1) -= 2.*M_PI;
