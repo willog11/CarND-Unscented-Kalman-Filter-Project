@@ -40,7 +40,7 @@ int main()
   vector<VectorXd> ground_truth;
 
   ofstream nis_log;
-  nis_log.open("NIS_log.txt");
+  nis_log.open(".//..//NIS_log.txt");
   nis_log << "Radar Value, Lidar Value"<< endl;
 
   h.onMessage([&ukf,&tools,&estimations,&ground_truth, &nis_log](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
