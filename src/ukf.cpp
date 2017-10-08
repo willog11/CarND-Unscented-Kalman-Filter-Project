@@ -135,7 +135,6 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 		x_ << px, py, 0, 0, 0;
 		time_us_ = meas_package.timestamp_;
 		is_initialized_ = true;
-		cout << "UKF::ProcessMeasurement Init complete" << endl;
 		return;
 	}
 
@@ -146,19 +145,13 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 	float dt = (meas_package.timestamp_ - time_us_) / 1000000.0;	//dt - expressed in seconds
 	time_us_ = meas_package.timestamp_;
 
-	cout << "UKF::ProcessMeasurement Prediction stage start" << endl;
 	Prediction(dt);
-	cout << "UKF::ProcessMeasurement Prediction stage complete" << endl;
 
 	if (meas_package.sensor_type_ == MeasurementPackage::RADAR) {
-		cout << "UKF::ProcessMeasurement UpdateRadar start" << endl;
 		UpdateRadar(meas_package);
-		cout << "UKF::ProcessMeasurement UpdateRadar complete" << endl;
 	}
 	else if (meas_package.sensor_type_ == MeasurementPackage::LASER) {
-		cout << "UKF::ProcessMeasurement UpdateLidar start" << endl;
 		UpdateLidar(meas_package);
-		cout << "UKF::ProcessMeasurement UpdateLidar complete" << endl;
 	}
 
 }
@@ -191,7 +184,6 @@ void UKF::Prediction(double delta_t) {
 		Xsig_pred_.col(i + 1) = x_ + sqrt(lambda_ + n_x_) * A.col(i);
 		Xsig_pred_.col(i + 1 + n_x_) = x_ - sqrt(lambda_ + n_x_) * A.col(i);
 	}
-	cout << "UKF::Prediction Generate sigma points complete" << endl;
 	/*****************************************************************************
 	*  Augmentation
 	****************************************************************************/
@@ -226,7 +218,7 @@ void UKF::Prediction(double delta_t) {
 		Xsig_aug.col(i + 1) = x_aug + sqrt(lambda_ + n_aug_) * L.col(i);
 		Xsig_aug.col(i + 1 + n_aug_) = x_aug - sqrt(lambda_ + n_aug_) * L.col(i);
 	}
-	cout << "UKF::Prediction Augmentation complete" << endl;
+
 	/*****************************************************************************
 	*  Sigma point prediction
 	****************************************************************************/
@@ -274,7 +266,7 @@ void UKF::Prediction(double delta_t) {
 		Xsig_pred_(3, i) = yaw_p;
 		Xsig_pred_(4, i) = yawd_p;
 	}
-	cout << "UKF::Prediction Sigma points  prediection complete" << endl;
+	
 	/*****************************************************************************
 	*  Predicted mean and covariance matricies
 	****************************************************************************/
@@ -304,7 +296,6 @@ void UKF::Prediction(double delta_t) {
 
 		P_ = P_ + weights_(i) * x_diff * x_diff.transpose();
 	}
-	cout << "UKF::Prediction Predicted mean and co-variance complete" << endl;
 }
 
 /**
@@ -367,7 +358,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
 	R << std_laspx_*std_laspx_, 0,
 		0, std_laspy_*std_laspy_;
 	S = S + R;
-	cout << "UKF::UpdateLidar Predict laser measurment complete" << endl;
+	
 	/*****************************************************************************
 	*  Update laser measurement
 	****************************************************************************/
@@ -395,8 +386,6 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
 	//update state mean and covariance matrix
 	x_ = x_ + K * z_diff;
 	P_ = P_ - K*S*K.transpose();
-
-	cout << "UKF::UpdateLidar Update laser measurment complete" << endl;
 
 	// Calculate NIS
 	NIS_lasar_ = z_diff.transpose() * S.inverse() * z_diff;
@@ -474,7 +463,6 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 		0, std_radphi_*std_radphi_, 0,
 		0, 0, std_radrd_*std_radrd_;
 	S = S + R;
-	cout << "UKF::UpdateRadar Predict radar measurment complete" << endl;
 
 	/*****************************************************************************
 	*  Update radar measurement
@@ -500,13 +488,12 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 
 		Tc = Tc + weights_(i) * x_diff * z_diff.transpose();
 	}
-	cout << "UKF::UpdateRadar calcualte cross correlation matrix complete" << endl;
+
 	//Kalman gain K;
 	MatrixXd K = Tc * S.inverse();
-	cout << "UKF::UpdateRadar Kalman gain complete" << endl;
+
 	//residual
 	VectorXd z_diff = z - z_pred;
-	cout << "UKF::UpdateRadar Residual complete" << endl;
 
 	//angle normalization
 	while (z_diff(1)> M_PI) z_diff(1) -= 2.*M_PI;
@@ -515,7 +502,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 	//update state mean and covariance matrix
 	x_ = x_ + K * z_diff;
 	P_ = P_ - K*S*K.transpose();
-	cout << "UKF::UpdateRadar Update radar measurment complete" << endl;
+
 	// Calculate NIS
 	NIS_radar_ = z_diff.transpose() * S.inverse() * z_diff;
 
