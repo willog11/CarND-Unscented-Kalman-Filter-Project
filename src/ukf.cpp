@@ -312,20 +312,23 @@ void UKF::Prediction(double delta_t) {
  * @param {MeasurementPackage} meas_package
  */
 void UKF::UpdateLidar(MeasurementPackage meas_package) {
-  /**
-  TODO:
+	/**
+	TODO:
 
-  Complete this function! Use lidar data to update the belief about the object's
-  position. Modify the state vector, x_, and covariance, P_.
+	Complete this function! Use lidar data to update the belief about the object's
+	position. Modify the state vector, x_, and covariance, P_.
 
-  You'll also need to calculate the lidar NIS.
-  */
+	You'll also need to calculate the lidar NIS.
+	*/
 
-  /*****************************************************************************
-  *  Predicted laser measurement
-  ****************************************************************************/
+	/*****************************************************************************
+	*  Predicted laser measurement
+	****************************************************************************/
 
-  //set measurement dimension, radar can measure r, phi, and r_dot
+	//extract measurement as VectorXd
+
+	VectorXd z = meas_package.raw_measurements_;
+	//set measurement dimension, radar can measure r, phi, and r_dot
 	int n_z = 3;
 
 	//create matrix for sigma points in measurement space
@@ -387,7 +390,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
 	MatrixXd K = Tc * S.inverse();
 
 	//residual
-	VectorXd z_diff = Zsig - z_pred;
+	VectorXd z_diff = z - z_pred;
 
 	//update state mean and covariance matrix
 	x_ = x_ + K * z_diff;
@@ -417,6 +420,9 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 	*  Predicted radar measurement
 	****************************************************************************/
 	
+	//extract measurement as VectorXd
+	VectorXd z = meas_package.raw_measurements_;
+
 	//set measurement dimension, radar can measure r, phi, and r_dot
 	int n_z = 3;
 
@@ -499,7 +505,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 	MatrixXd K = Tc * S.inverse();
 	cout << "UKF::UpdateRadar Kalman gain complete" << endl;
 	//residual
-	VectorXd z_diff = Zsig - z_pred;
+	VectorXd z_diff = z - z_pred;
 	cout << "UKF::UpdateRadar Residual complete" << endl;
 
 	//angle normalization
