@@ -328,8 +328,8 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
 	//extract measurement as VectorXd
 
 	VectorXd z = meas_package.raw_measurements_;
-	//set measurement dimension, radar can measure r, phi, and r_dot
-	int n_z = 3;
+	//set measurement dimension, radar can measure px and py
+	int n_z = 2;
 
 	//create matrix for sigma points in measurement space
 	MatrixXd Zsig = MatrixXd(n_z, 2 * n_aug_ + 1);
