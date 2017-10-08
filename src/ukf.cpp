@@ -73,6 +73,8 @@ UKF::UKF() {
 	// init NIS measurements
 	NIS_lasar_ = 0.0;
 	NIS_radar_ = 0.0;
+
+	cout << "UKF::UKF constructed " << endl;
 }
 
 UKF::~UKF() {}
@@ -99,7 +101,6 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 		* Remember: you'll need to convert radar from polar to cartesian coordinates.
 		*/
 		// first measurement
-		cout << "UKF::ProcessMeasurement Init " << endl;
 		x_ << 1, 1, 1, 1, 1;
 
 		// init covariance matrix
