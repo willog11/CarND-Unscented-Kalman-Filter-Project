@@ -41,7 +41,7 @@ int main()
 
   ofstream nis_log;
   nis_log.open("NIS_log.txt");
-  nis_log << "Radar Value, Lidar Value"
+  nis_log << "Radar Value, Lidar Value";
 
   h.onMessage([&ukf,&tools,&estimations,&ground_truth](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
