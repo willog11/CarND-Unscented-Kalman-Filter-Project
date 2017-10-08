@@ -4,6 +4,7 @@
 #include <math.h>
 #include "ukf.h"
 #include "tools.h"
+#include <fstream>
 
 using namespace std;
 
@@ -37,6 +38,10 @@ int main()
   Tools tools;
   vector<VectorXd> estimations;
   vector<VectorXd> ground_truth;
+
+  ofstream nis_log;
+  nis_log.open("NIS_log.txt");
+  nis_log << "Radar Value, Lidar Value"
 
   h.onMessage([&ukf,&tools,&estimations,&ground_truth](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
@@ -106,7 +111,8 @@ int main()
     	  ground_truth.push_back(gt_values);
           
           //Call ProcessMeasurment(meas_package) for Kalman filter
-    	  ukf.ProcessMeasurement(meas_package);    	  
+    	  ukf.ProcessMeasurement(meas_package);
+		  nis_log << ukf.NIS_radar_ << ukf.NIS_lasar_ << endl;
 
     	  //Push the current estimated x,y positon from the Kalman filter's state vector
 
@@ -185,6 +191,8 @@ int main()
     return -1;
   }
   h.run();
+
+  nis_log.close();
 }
 
 
