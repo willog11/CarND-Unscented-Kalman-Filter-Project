@@ -107,8 +107,8 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 		P_ <<1, 0, 0, 0, 0,
 			0, 1, 0, 0, 0,
 			0, 0, 1, 0, 0,
-			0, 0, 0, 1, 0,
-			0, 0, 0, 0, 1;
+			0, 0, 0, 0.1, 0,
+			0, 0, 0, 0, 0.001;
 
 		float px;
 		float py;
